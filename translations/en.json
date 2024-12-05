@@ -1,0 +1,22 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Neta Vehicle Status Configuration",
+                "description": "Please enter the necessary information to set up the Neta Vehicle Status integration.",
+                "data": {
+                    "name": "Name",
+                    "vin": "Vehicle Identification Number (VIN)",
+                    "authorization": "Authorization Token",
+                    "update_interval": "Update Interval (seconds)",
+                    "api_key": "API Key",
+                    "sign": "Signature"
+                }
+            }
+        },
+        "abort": {
+            "reconfigured": "Configuration updated successfully!"
+        }
+    }
+}
+
