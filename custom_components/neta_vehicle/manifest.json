@@ -1,0 +1,11 @@
+{
+  "domain": "neta_vehicle",
+  "name": "Neta Vehicle",
+  "version": "1.6.3",
+  "requirements": [],
+  "codeowners": ["@netcookies"],
+  "documentation": "https://github.com/netcookies/neta_vehicle_status",
+  "issue_tracker": "https://github.com/netcookies/neta_vehicle_status/issues",
+  "iot_class": "cloud_polling",
+  "config_flow": true
+}

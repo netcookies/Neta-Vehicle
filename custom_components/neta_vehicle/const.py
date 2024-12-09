@@ -1,0 +1,11 @@
+""" The Const file """
+
+DOMAIN = "neta_vehicle"
+CONF_API_KEY = "api_key"
+CONF_VIN = "vin"
+CONF_AUTHORIZATION = "authorization"
+CONF_SIGN = "sign"
+CONF_NAME = "name"
+CONF_UPDATE_INTERVAL = "update_interval"
+DEFAULT_API_KEY="e0ae89fb37b6151889c6de3ba6b84e0d3a67f52cd5767758d4186fefff8f763c"
+DEFAULT_SIGN="c33eddce7311637175298fc5ab10440797ce9a4a84a1d7c829a62074b80ea5ae"
