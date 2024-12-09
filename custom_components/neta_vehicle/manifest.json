@@ -1,7 +1,7 @@
 {
   "domain": "neta_vehicle",
   "name": "Neta Vehicle",
-  "version": "1.6.3",
+  "version": "1.6.4",
   "requirements": [],
   "codeowners": ["@netcookies"],
   "documentation": "https://github.com/netcookies/neta_vehicle_status",
