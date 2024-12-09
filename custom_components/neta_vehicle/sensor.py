@@ -159,6 +159,72 @@ class ChargingStatusSensor(BaseSensor):
             "left_turn_light_status": data.get("lampStatus", {}).get("leftTurnLightStatus"),
             "mood_light_status": data.get("lampStatus", {}).get("moodLightStatus"),
             "dipped_head_light_status": data.get("lampStatus", {}).get("dippedHeadLightStatus"),
+
+            # seatStatus
+             "left_after_seat_heating_status": data.get("seatStatus", {}).get("leftAfterSeatHeatingStatus"),
+             "right_after_seat_ventilation_status": data.get("seatStatus", {}).get("rightAfterSeatVentilationStatus"),
+             "driver_folding_seat_status": data.get("seatStatus", {}).get("driverFoldingSeatStatus"),
+             "right_after_seat_heating_status": data.get("seatStatus", {}).get("rightAfterSeatHeatingStatus"),
+             "left_after_seat_ventilation_status": data.get("seatStatus", {}).get("leftAfterSeatVentilationStatus"),
+             "co_driver_seat_ventilation_status": data.get("seatStatus", {}).get("coDriverSeatVentilationStatus"),
+             "co_driver_folding_seat_status": data.get("seatStatus", {}).get("coDriverFoldingSeatStatus"),
+             "co_driver_seat_heating_status": data.get("seatStatus", {}).get("coDriverSeatHeatingStatus"),
+             "driver_seat_ventilation_status": data.get("seatStatus", {}).get("driverSeatVentilationStatus"),
+             "driver_seat_heating_status": data.get("seatStatus", {}).get("driverSeatHeatingStatus"),
+         
+             # doorCoverStatus
+             "cover_front_status": data.get("doorCoverStatus", {}).get("coverFrontStatus"),
+             "slow_charge_cover_status": data.get("doorCoverStatus", {}).get("slowChargeCoverStatus"),
+             "left_after_door_status": data.get("doorCoverStatus", {}).get("leftAfterDoorStatus"),
+             "driver_size_door_status": data.get("doorCoverStatus", {}).get("driverSizeDoorStatus"),
+             "co_driver_size_door_status": data.get("doorCoverStatus", {}).get("coDriverSizeDoorStatus"),
+             "fuel_tank_cover_status": data.get("doorCoverStatus", {}).get("fuelTankCoverStatus"),
+             "fast_charge_cover_status": data.get("doorCoverStatus", {}).get("fastChargeCoverStatus"),
+             "right_after_door_status": data.get("doorCoverStatus", {}).get("rightAfterDoorStatus"),
+             "car_boar_status": data.get("doorCoverStatus", {}).get("carBoarStatus"),
+         
+             # airconditionStatus
+             "clm_vent_sts": data.get("airconditionStatus", {}).get("clmVentSts"),
+             "defrost_status": data.get("airconditionStatus", {}).get("defrostStatus"),
+             "air_filter_element": data.get("airconditionStatus", {}).get("airFilterElement"),
+             "thermal_container_status": data.get("airconditionStatus", {}).get("thermalContainerStatus"),
+             "air_temp": data.get("airconditionStatus", {}).get("airTemp"),
+             "air_wind_level": data.get("airconditionStatus", {}).get("airWindLevel"),
+             "lock_car_keep_status": data.get("airconditionStatus", {}).get("lockCarKeepStatus"),
+             "air_out_temp": data.get("airconditionStatus", {}).get("airOutTemp"),
+             "air_in_temp": data.get("airconditionStatus", {}).get("airInTemp"),
+             "thermal_container_temp": data.get("airconditionStatus", {}).get("thermalContainerTemp"),
+             "clm_foot_sts": data.get("airconditionStatus", {}).get("clmFootSts"),
+             "air_mode": data.get("airconditionStatus", {}).get("airMode"),
+             "clm_ac_sts": data.get("airconditionStatus", {}).get("clmAcSts"),
+             "air_status": data.get("airconditionStatus", {}).get("airStatus"),
+         
+             # windowStatus
+             "driver_size_win_status": data.get("windowStatus", {}).get("driverSizeWinStatus"),
+             "sky_window_status": data.get("windowStatus", {}).get("skyWindowStatus"),
+             "right_after_win_lock_status": data.get("windowStatus", {}).get("rightAfterWinLockStatus"),
+             "left_after_win_status": data.get("windowStatus", {}).get("leftAfterWinStatus"),
+             "co_driver_size_win_status": data.get("windowStatus", {}).get("coDriverSizeWinStatus"),
+         
+             # tyreStatus
+             "tire_right_after_press": data.get("tyreStatus", {}).get("tireRightAfterPress"),
+             "tire_right_front_press": data.get("tyreStatus", {}).get("tireRightFrontPress"),
+             "tire_left_front_press": data.get("tyreStatus", {}).get("tireLeftFrontPress"),
+             "tire_right_front_temp": data.get("tyreStatus", {}).get("tireRightFrontTemp"),
+             "tire_left_after_temp": data.get("tyreStatus", {}).get("tireLeftAfterTemp"),
+             "tire_left_front_temp": data.get("tyreStatus", {}).get("tireLeftFrontTemp"),
+             "tire_right_after_temp": data.get("tyreStatus", {}).get("tireRightAfterTemp"),
+             "tire_left_after_press": data.get("tyreStatus", {}).get("tireLeftAfterPress"),
+         
+             # lockStatus
+             "co_driver_size_door_lock_status": data.get("lockStatus", {}).get("coDriverSizeDoorLockStatus"),
+             "slow_charge_cover_lock_status": data.get("lockStatus", {}).get("slowChargeCoverLockStatus"),
+             "driver_size_door_lock_status": data.get("lockStatus", {}).get("driverSizeDoorLockStatus"),
+             "car_boar_lock_status": data.get("lockStatus", {}).get("carBoarLockStatus"),
+             "left_after_door_lock_status": data.get("lockStatus", {}).get("leftAfterDoorLockStatus"),
+             "fast_charge_cover_lock_status": data.get("lockStatus", {}).get("fastChargeCoverLockStatus"),
+             "right_after_door_lock_status": data.get("lockStatus", {}).get("rightAfterDoorLockStatus"),
+             "fuel_tank_cover_lock_status": data.get("lockStatus", {}).get("fuelTankCoverLockStatus"),
         }
 
         return attributes
