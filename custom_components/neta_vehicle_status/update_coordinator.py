@@ -3,7 +3,7 @@ import logging
 import time
 import aiohttp
 from datetime import timedelta
-from typing import Callable, List 
+from typing import Callable, List
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval, async_call_later
 
@@ -23,6 +23,7 @@ class UpdateCoordinator:
         self._is_running = True
         self._listeners: List[Callable] = []  # 监听器列表
         self._unsub_timer = None  # 用于存储取消定时任务的句柄
+        self._max_retries = 5
 
     def async_add_listener(self, listener: Callable):
         """添加更新监听器。"""
@@ -40,6 +41,7 @@ class UpdateCoordinator:
 
     async def fetch_vehicle_status(self):
         """执行 API 调用以获取车辆状态。"""
+        retries = 0
         url = "https://appapi-pki.chehezhi.cn:18443/pivot/veh-status/vehicle-status-control/1.0/getAppVehicleData"
         headers = {
             "appId": "HOZON-B-xKrgEvMt",
@@ -56,27 +58,37 @@ class UpdateCoordinator:
         }
         data = {"types": "", "vin": self._vin}
 
-        async with aiohttp.ClientSession() as session:
+        while retries < self._max_retries:
             try:
-                async with session.post(url, headers=headers, data=data) as response:
-                    response.raise_for_status()
-                    json_data = await response.json()
+                async with aiohttp.ClientSession() as session:
+                    async with session.post(url, headers=headers, data=data) as response:
+                        response.raise_for_status()
+                        json_data = await response.json()
 
-                    if json_data.get("code") == 20000:
-                        return json_data.get("data", {})
-                    else:
-                        _LOGGER.error(
-                            "API Error: code=%s, description=%s, full_response=%s",
-                            json_data.get("code"),
-                            json_data.get("description", "No description"),
-                            json_data,
-                        )
-                        await self.handle_error("Token已过期，需要重新配置")
-                        return None
+                        if json_data.get("code") == 20000:
+                            return json_data.get("data", {})
+                        else:
+                            _LOGGER.error(
+                                "API Error: code=%s, description=%s, full_response=%s",
+                                json_data.get("code"),
+                                json_data.get("description", "No description"),
+                                json_data,
+                            )
+                            await self.handle_error("Token已过期，需要重新配置")
+                            return None
+            except aiohttp.ClientError as e:
+                _LOGGER.error("Client error fetching vehicle data: %s", e)
+            except asyncio.TimeoutError:
+                _LOGGER.error("Request timeout fetching vehicle data.")
             except Exception as e:
-                _LOGGER.error("Error fetching vehicle data: %s", e)
-                await self.handle_error("API 请求失败，请检查网络或配置")
-                return None
+                _LOGGER.error("Unexpected error: %s", e)
+
+            retries += 1
+            _LOGGER.info("Retrying... Attempt %d of %d", retries, self._max_retries)
+            await asyncio.sleep(self._update_interval / self._max_retries)
+
+        await self.handle_error("API 请求失败，请检查网络或配置")
+        return None
 
     async def handle_error(self, message):
         """处理 API 错误并发送通知。"""
@@ -88,7 +100,7 @@ class UpdateCoordinator:
     async def start(self):
         """开始定期更新数据。"""
         self._is_running = True
-       
+
         # 立即触发第一次数据更新
         await self.update_data()
 
