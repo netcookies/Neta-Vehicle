@@ -6,6 +6,7 @@ from datetime import timedelta
 from typing import Callable, List
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval, async_call_later
+from homeassistant.components import persistent_notification
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -93,8 +94,8 @@ class UpdateCoordinator:
     async def handle_error(self, message):
         """处理 API 错误并发送通知。"""
         self._is_running = False
-        self.hass.components.persistent_notification.create(
-            f"{message}。", title="车辆状态集成错误", notification_id="neta_vehicle_status_error"
+        persistent_notification.create(
+            self.hass, f"{message}。", title="车辆状态集成错误", notification_id="neta_vehicle_status_error"
         )
 
     async def start(self):
