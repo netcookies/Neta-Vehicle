@@ -6,7 +6,6 @@ from datetime import timedelta
 from typing import Callable, List
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.event import async_track_time_interval, async_call_later
-from homeassistant.components import persistent_notification
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -94,8 +93,14 @@ class UpdateCoordinator:
     async def handle_error(self, message):
         """处理 API 错误并发送通知。"""
         self._is_running = False
-        persistent_notification.create(
-            self.hass, f"{message}。", title="车辆状态集成错误", notification_id="neta_vehicle_status_error"
+        persistent_notification_data = {
+            "title": "Neta Vehicle 车辆Token已过期",
+            "message": f"{message}",
+            "notification_id": "neta_vehicle_status_error"
+        }
+        # 调用 Home Assistant 服务发送持久化通知
+        await self.hass.services.async_call(
+            "persistent_notification", "create", persistent_notification_data
         )
 
     async def start(self):
