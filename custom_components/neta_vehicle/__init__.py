@@ -2,6 +2,7 @@ import logging
 from homeassistant import config_entries, core
 from homeassistant.helpers import discovery
 from homeassistant.const import Platform
+from homeassistant.core import ServiceCall
 from .update_coordinator import UpdateCoordinator
 from .config_flow import NetaVehicleStatusConfigFlow
 from .const import (
