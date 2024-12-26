@@ -104,6 +104,9 @@ async def async_reload_entry(hass: core.HomeAssistant, entry: config_entries.Con
     """Handle config changes and reload entry."""
     _LOGGER.debug("Reloading Neta Vehicle Status for entry: %s", entry)
 
+    # 取消注册服务
+    hass.services.async_remove(DOMAIN, "signin")
+
     # Unload the current platform first
     await async_unload_entry(hass, entry)
 

@@ -1,0 +1,7 @@
+
+signin:
+  description: 签到服务。
+  fields:
+    token:
+      description: 传入账号token.
+
