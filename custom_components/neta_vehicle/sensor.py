@@ -18,8 +18,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     name = config_entry.data.get(CONF_NAME)
     vin = config_entry.data.get(CONF_VIN)
 
-    coordinator: UpdateCoordinator = hass.data["neta_vehicle_status"][config_entry.entry_id]
-
+    coordinator: UpdateCoordinator = hass.data[DOMAIN][config_entry.entry_id]
 
     # 定义传感器实体
     sensors = [

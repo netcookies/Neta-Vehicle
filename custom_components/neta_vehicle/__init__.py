@@ -79,6 +79,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.Conf
     # 创建 UpdateCoordinator 实例
     coordinator = UpdateCoordinator(hass, api_key, vin, authorization, sign, update_interval)
     hass.data[DOMAIN][entry.entry_id] = coordinator
+    _LOGGER.debug("coordinator regeisted.")
 
     await coordinator.start()
 
