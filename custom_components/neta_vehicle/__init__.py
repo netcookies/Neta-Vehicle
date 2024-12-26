@@ -4,18 +4,56 @@ from homeassistant.helpers import discovery
 from homeassistant.const import Platform
 from .update_coordinator import UpdateCoordinator
 from .config_flow import NetaVehicleStatusConfigFlow
+from .const import (
+    DOMAIN,
+    CONF_VIN,
+    CONF_SIGN,
+    CONF_NAME,
+    CONF_API_KEY,
+    CONF_AUTHORIZATION,
+    CONF_UPDATE_INTERVAL,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
-DOMAIN = "neta_vehicle_status"
-CONF_API_KEY = "api_key"
-CONF_VIN = "vin"
-CONF_AUTHORIZATION = "authorization"
-CONF_SIGN = "sign"
-CONF_NAME = "name"
-CONF_UPDATE_INTERVAL = "update_interval"
-
 PLATFORMS = [Platform.SENSOR]
+
+async def signin_service(authorization, call: ServiceCall):
+    """Call the signin service."""
+    token = call.data.get("token", authorization)
+    url = "https://appapi-pki.chehezhi.cn:18443/hznz/customer/sign"
+    headers = {
+        "appId": "HOZON-B-xKrgEvMt",
+        "Authorization": f"Bearer {token}",
+        "channel": "iOS",
+        "nonce": "3846904368",
+        "timestamp": str(int(time.time() * 1000)),
+        "appVersion": "6.4.2",
+        "login_channel": "1",
+        "User-Agent": "CHZ/6.4.2 (com.hozon.sales.app; build:1; iOS 17.7.1) Alamofire/5.4.4",
+        "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+    }
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers, data=data) as response:
+                response.raise_for_status()
+                json_data = await response.json()
+                if json_data.get("code") == 200:
+                    return json_data.get("data", {})
+                else:
+                    _LOGGER.error(
+                        "API Error: code=%s, description=%s, full_response=%s",
+                        json_data.get("code"),
+                        json_data.get("description", "No description"),
+                        json_data,
+                    )
+                    return None
+    except aiohttp.ClientError as e:
+        _LOGGER.error("Client error fetching vehicle data: %s", e)
+    except asyncio.TimeoutError:
+        _LOGGER.error("Request timeout fetching vehicle data.")
+    except Exception as e:
+        _LOGGER.error("Unexpected error: %s", e)
 
 async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.ConfigEntry):
     """Set up Neta Vehicle Status from a config entry."""
@@ -29,6 +67,13 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.Conf
     sign = entry.data.get(CONF_SIGN)
     name = entry.data.get(CONF_NAME, "Neta Vehicle Status")
     update_interval = entry.data.get(CONF_UPDATE_INTERVAL, 60)
+
+    async def signin_service_wrapper(call: ServiceCall):
+        await signin_service(authorization, call)
+
+    # 注册自定义服务
+    hass.services.async_register( DOMAIN, "signin", signin_service_wrapper)
+    _LOGGER.debug("Action of Neta Vehicle regeisted.")
 
     # 创建 UpdateCoordinator 实例
     coordinator = UpdateCoordinator(hass, api_key, vin, authorization, sign, update_interval)

@@ -11,7 +11,6 @@ from .const import (
     CONF_UPDATE_INTERVAL,
     DEFAULT_SIGN,
     DEFAULT_API_KEY,
-
 )
 
 class NetaVehicleStatusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
