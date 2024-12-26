@@ -43,12 +43,12 @@ async def signin_service(authorization, call: ServiceCall):
                 response.raise_for_status()
                 json_data = await response.json()
                 if json_data.get("code") == 200:
-                    return json_data.get("data", {})
+                    return json_data.get("message", {})
                 else:
                     _LOGGER.error(
-                        "API Error: code=%s, description=%s, full_response=%s",
+                        "API Error: code=%s, message=%s, full_response=%s",
                         json_data.get("code"),
-                        json_data.get("description", "No description"),
+                        json_data.get("message", "No description"),
                         json_data,
                     )
                     return None
