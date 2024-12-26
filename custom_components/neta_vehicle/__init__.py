@@ -1,3 +1,4 @@
+import time
 import logging
 from homeassistant import config_entries, core
 from homeassistant.helpers import discovery
