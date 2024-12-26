@@ -39,7 +39,7 @@ async def signin_service(authorization, call: ServiceCall):
     }
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url, headers=headers, data=data) as response:
+            async with session.get(url, headers=headers) as response:
                 response.raise_for_status()
                 json_data = await response.json()
                 if json_data.get("code") == 200:
