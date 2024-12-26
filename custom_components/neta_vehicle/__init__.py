@@ -1,5 +1,7 @@
-import time
+import asyncio
 import logging
+import time
+import aiohttp
 from homeassistant import config_entries, core
 from homeassistant.helpers import discovery
 from homeassistant.const import Platform
