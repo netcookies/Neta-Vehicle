@@ -1,0 +1,37 @@
+{
+    "id": "netcookies.app.sub",
+    "name": "netcookies 脚本订阅",
+    "description": "该订阅兼容BoxJs",
+    "author": "@netcookies",
+    "icon": "https://avatars.githubusercontent.com/u/224964",
+    "repo": "https://github.com/netcookies/Neta-Vehicle",
+    "apps": [
+        {
+            "id": "NetaVehicle",
+            "name": "哪吒汽车",
+            "keys": [
+                "NETA_VEHICLE_TOKEN"
+            ],
+            "descs_html": [
+                "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
+            ],
+            "settings": [
+                {
+                    "id": "@NETA_VEHICLE_TOKEN.Debug",
+                    "name": "开发者模式",
+                    "val": false,
+                    "type": "boolean",
+                    "desc": "用于调试脚本, 一般用户请勿开启."
+                }
+            ],
+            "script": "https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js",
+            "author": "@NobyDa",
+            "repo": "https://github.com/netcookies/Neta-Vehicle",
+            "icons": [
+                "https://brands.home-assistant.io/neta_vehicle/logo.png"
+            ]
+        }
+    ],
+    "task": [
+    ]
+}
