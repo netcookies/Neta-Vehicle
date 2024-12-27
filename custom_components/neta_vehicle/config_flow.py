@@ -81,9 +81,11 @@ class NetaVehicleStatusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         return self.async_abort(reason="reconfigured")
 
     # 新增 async_get_options_flow
-    async def async_get_options_flow(self, config_entry):
+    @staticmethod
+    @callback
+    def async_get_options_flow(config_entry):
         """Handle options flow for the config entry."""
-        return self.OptionsFlowHandler(config_entry)
+        return OptionsFlowHandler(config_entry)
 
     # 处理选项流的类
     class OptionsFlowHandler(config_entries.OptionsFlow):
