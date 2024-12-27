@@ -4,6 +4,8 @@ const tokenName = 'NetaVehicle'
 const tokenKey = 'neta_vehicle_token'
 const tokenVal = $request.headers['Authorization'] || $request.headers['authorization']
 
+let ms = `${tokenName}`
+$notification.post(ms, tokenVal.replace('Bearer ', ''), tokenKey, '详见日志')
 if (tokenVal) {
     $.setdata(tokenVal.replace('Bearer ', ''), tokenKey)
     let msg = `${tokenName}`
