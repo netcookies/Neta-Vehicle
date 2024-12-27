@@ -10,14 +10,14 @@
             "id": "NetaVehicle",
             "name": "哪吒汽车",
             "keys": [
-                "@NETA_VEHICLE_TOKEN.neta_vehicle_token"
+                "neta_vehicle_token"
             ],
             "descs_html": [
                 "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
             ],
             "settings": [
                 {
-                    "id": "@NETA_VEHICLE_TOKEN.neta_vehicle_token",
+                    "id": "neta_vehicle_token",
                     "name": "Token",
                     "val": null,
                     "type": "text",
