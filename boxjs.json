@@ -10,22 +10,22 @@
             "id": "NetaVehicle",
             "name": "哪吒汽车",
             "keys": [
-                "NETA_VEHICLE_TOKEN"
+                "@NETA_VEHICLE_TOKEN.neta_vehicle_token"
             ],
             "descs_html": [
                 "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
             ],
             "settings": [
                 {
-                    "id": "@NETA_VEHICLE_TOKEN.Debug",
-                    "name": "开发者模式",
-                    "val": false,
-                    "type": "boolean",
-                    "desc": "用于调试脚本, 一般用户请勿开启."
+                    "id": "@NETA_VEHICLE_TOKEN.neta_vehicle_token",
+                    "name": "Token",
+                    "val": null,
+                    "type": "text",
+                    "desc": ""
                 }
             ],
             "script": "https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js",
-            "author": "@NobyDa",
+            "author": "@netcookies",
             "repo": "https://github.com/netcookies/Neta-Vehicle",
             "icons": [
                 "https://brands.home-assistant.io/neta_vehicle/logo.png"
