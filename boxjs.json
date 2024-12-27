@@ -19,9 +19,10 @@
                 {
                     "id": "neta_vehicle_token",
                     "name": "Token",
-                    "val": null,
-                    "type": "text",
-                    "desc": ""
+                    "val": "",
+                    "type": "textarea",
+                    "desc": "",
+                    "autoGrow": true
                 }
             ],
             "script": "https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js",
