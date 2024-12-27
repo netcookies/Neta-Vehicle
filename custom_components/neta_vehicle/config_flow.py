@@ -87,38 +87,38 @@ class NetaVehicleStatusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle options flow for the config entry."""
         return OptionsFlowHandler(config_entry)
 
-    # 处理选项流的类
-    class OptionsFlowHandler(config_entries.OptionsFlow):
-        """Handle options flow for Neta Vehicle Status configuration."""
+# 处理选项流的类
+class OptionsFlowHandler(config_entries.OptionsFlow):
+    """Handle options flow for Neta Vehicle Status configuration."""
 
-        def __init__(self, config_entry):
-            self.config_entry = config_entry
+    def __init__(self, config_entry):
+        self.config_entry = config_entry
 
-        async def async_step_init(self, user_input=None):
-            """Handle the initialization of the options flow step."""
-            if user_input is not None:
-                # 处理用户输入，假设我们更新了 AUTHORIZATION
-                new_authorization = user_input.get(CONF_AUTHORIZATION)
+    async def async_step_init(self, user_input=None):
+        """Handle the initialization of the options flow step."""
+        if user_input is not None:
+            # 处理用户输入，假设我们更新了 AUTHORIZATION
+            new_authorization = user_input.get(CONF_AUTHORIZATION)
 
-                # 更新配置项
-                self.config_entry.data = {**self.config_entry.data, CONF_AUTHORIZATION: new_authorization}
+            # 更新配置项
+            self.config_entry.data = {**self.config_entry.data, CONF_AUTHORIZATION: new_authorization}
 
-                # 更新配置后，重新加载集成
-                await self.hass.config_entries.async_reload(self.config_entry.entry_id)
+            # 更新配置后，重新加载集成
+            await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
-                # 返回结果，重新加载后不再需要继续配置步骤
-                return self.async_create_entry(
-                    title=self.config_entry.title,
-                    data=self.config_entry.data
-                )
+            # 返回结果，重新加载后不再需要继续配置步骤
+            return self.async_create_entry(
+                title=self.config_entry.title,
+                data=self.config_entry.data
+            )
 
-            # 如果没有用户输入，显示表单让用户输入配置
-            return self.async_show_form(step_id="init", data_schema=self._get_data_schema())
+        # 如果没有用户输入，显示表单让用户输入配置
+        return self.async_show_form(step_id="init", data_schema=self._get_data_schema())
 
-        def _get_data_schema(self):
-            """定义表单字段的 Schema."""
-            return vol.Schema({
-                vol.Required(CONF_AUTHORIZATION, default=self.config_entry.data.get(CONF_AUTHORIZATION, "")): str,
-            })
+    def _get_data_schema(self):
+        """定义表单字段的 Schema."""
+        return vol.Schema({
+            vol.Required(CONF_AUTHORIZATION, default=self.config_entry.data.get(CONF_AUTHORIZATION, "")): str,
+        })
 
 
