@@ -110,7 +110,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             )
 
             # 更新配置后，重新加载集成
-            await self.hass.config_entries.async_reload(self._conf_app_id)
+            await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
             # 返回结果，重新加载后不再需要继续配置步骤
             return self.async_create_entry(
