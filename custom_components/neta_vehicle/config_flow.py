@@ -92,11 +92,12 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options flow for Neta Vehicle Status configuration."""
 
     def __init__(self):
-        self.config = dict(self.config_entry.data)
+        self.config = {}
         self._conf_app_id: str | None = None
 
     async def async_step_init(self, user_input=None):
         """Manage the options."""
+        self.config = dict(self.config_entry.data)
         return await self.async_step_user()
 
     async def async_step_user(self, user_input=None):
