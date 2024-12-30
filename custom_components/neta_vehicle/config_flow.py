@@ -101,7 +101,13 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             new_authorization = user_input.get(CONF_AUTHORIZATION)
 
             # 更新配置项
-            self.config_entry.data = {**self.config_entry.data, CONF_AUTHORIZATION: new_authorization}
+            new_data = {**self.config_entry.data, CONF_AUTHORIZATION: new_authorization}
+             
+            # 使用 async_update_entry 来更新配置条目
+            await self.hass.config_entries.async_update_entry(
+                self.config_entry,
+                data=new_data
+            )
 
             # 更新配置后，重新加载集成
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
