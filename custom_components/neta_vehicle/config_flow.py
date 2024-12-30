@@ -108,7 +108,6 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
                 data=self.config
             )
 
-            _LOGGER.debug(user_input)
             # 更新配置后，重新加载集成
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
@@ -119,7 +118,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
             )
 
         # 如果没有用户输入，显示表单让用户输入配置
-        return self.async_show_form(step_id="init", data_schema=self._get_data_schema())
+        return self.async_show_form(step_id="user", data_schema=self._get_data_schema())
 
     def _get_data_schema(self):
         """定义表单字段的 Schema."""
