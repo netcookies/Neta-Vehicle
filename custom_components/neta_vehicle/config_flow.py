@@ -83,10 +83,8 @@ class NetaVehicleStatusConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     # 新增 async_get_options_flow
     @staticmethod
     @callback
-    def async_get_options_flow(
-            config_entry: ConfigEntry,
-            ) -> OptionsFlowHandler:
-        """Create the options flow."""
+    def async_get_options_flow(config_entry):
+        """Handle options flow for the config entry."""
         return OptionsFlowHandler()
 
 # 处理选项流的类
@@ -94,7 +92,7 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
     """Handle options flow for Neta Vehicle Status configuration."""
 
     def __init__(self):
-        self.config = dict(config_entry.data)
+        self.config = dict(self.config_entry.data)
         self._conf_app_id: str | None = None
 
     async def async_step_init(self, user_input=None):
