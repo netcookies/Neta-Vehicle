@@ -93,22 +93,22 @@ class OptionsFlowHandler(config_entries.OptionsFlow):
 
     def __init__(self, config_entry):
         self.config_entry = config_entry
+        self.config = dict(config_entry.data)
 
     async def async_step_init(self, user_input=None):
+        """Manage the options."""
+        return await self.async_step_user()
+
+    async def async_step_user(self, user_input=None):
         """Handle the initialization of the options flow step."""
         if user_input is not None:
-            # 处理用户输入，假设我们更新了 AUTHORIZATION
-            new_authorization = user_input.get(CONF_AUTHORIZATION)
-
-            # 更新配置项
-            new_data = {**self.config_entry.data, CONF_AUTHORIZATION: new_authorization}
-             
-            # 使用 async_update_entry 来更新配置条目
-            await self.hass.config_entries.async_update_entry(
+            self.config.update(user_input)
+            self.hass.config_entries.async_update_entry(
                 self.config_entry,
-                data=new_data
+                data=self.config
             )
 
+            _LOGGER.debug(user_input)
             # 更新配置后，重新加载集成
             await self.hass.config_entries.async_reload(self.config_entry.entry_id)
 
