@@ -17,6 +17,24 @@
         "abort": {
             "reconfigured": "Configuration updated successfully!"
         }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "title": "Neta Vehicle Status Configuration",
+                "description": "Please enter the necessary information to set up the Neta Vehicle Status integration.",
+                "data": {
+                    "name": "Name",
+                    "authorization": "Authorization Token"
+                }
+            }
+        }
+    },
+    "services": {
+        "signin": {
+            "name": "App check in",
+            "description": "App check in"
+        }
     }
 }
 

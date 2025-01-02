@@ -17,5 +17,22 @@
         "abort": {
             "reconfigured": "配置更新成功!"
         }
+    },
+    "options": {
+        "step": {
+            "user": {
+                "title": "Neta Vehicle Status Configuration",
+                "description": "Please enter the necessary information to set up the Neta Vehicle Status integration.",
+                "data": {
+                    "authorization": "认证 Token"
+                }
+            }
+        }
+    },
+    "services": {
+        "signin": {
+            "name": "App签到",
+            "description": "App签到"
+        }
     }
 }
