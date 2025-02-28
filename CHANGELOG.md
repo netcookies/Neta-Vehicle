@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.2...v) (2025-02-28)
+
+
+### Features
+
+* add update token actions. ([458c172](https://github.com/netcookies/Neta-Vehicle/commit/458c1727bf6d2e53499866617f0cbd6de277d53e))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.1...v) (2025-01-02)
 
 
