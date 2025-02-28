@@ -30,7 +30,7 @@
                     "type": "textarea",
                     "desc": "Homeassistant 的长效登录token",
                     "autoGrow": true,
-                    "rows": 10
+                    "rows": 5
                 },
                 {
                     "id": "neta_vehicle_token",
