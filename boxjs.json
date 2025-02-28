@@ -16,7 +16,14 @@
                 "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
             ],
             "settings": [
-                 {
+                {
+                    "id": "hass_access_url",
+                    "name": "Homeassistant 登录 地址",
+                    "val": "",
+                    "type": "text",
+                    "desc": "Homeassistant 登录 URL"
+                },                
+                {
                     "id": "hass_api_url",
                     "name": "Homeassistant API 地址",
                     "val": "",
