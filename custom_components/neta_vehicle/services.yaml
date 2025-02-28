@@ -5,3 +5,8 @@ signin:
     token:
       description: 传入账号token.
 
+update_token:
+  description: 更新token。
+  fields:
+    token:
+      description: 传入账号token.
