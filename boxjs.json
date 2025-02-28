@@ -16,21 +16,28 @@
                 "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
             ],
             "settings": [
-                {
-                    "id": "neta_vehicle_token",
-                    "name": "Neta Vehicle Token",
+                 {
+                    "id": "hass_access_url",
+                    "name": "Homeassistant 登录地址",
                     "val": "",
-                    "type": "textarea",
-                    "desc": "哪吒汽车Toekn",
-                    "autoGrow": true,
-                    "rows": 20
-                },
+                    "type": "text",
+                    "desc": "Homeassistant URL"
+                },                 
                 {
                     "id": "hass_access_token",
                     "name": "Homeassistant Access Token",
                     "val": "",
                     "type": "textarea",
                     "desc": "Homeassistant 的长效登录token",
+                    "autoGrow": true,
+                    "rows": 10
+                },
+                {
+                    "id": "neta_vehicle_token",
+                    "name": "Neta Vehicle Token",
+                    "val": "",
+                    "type": "textarea",
+                    "desc": "哪吒汽车Toekn",
                     "autoGrow": true,
                     "rows": 10
                 }
