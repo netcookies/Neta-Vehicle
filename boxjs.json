@@ -17,11 +17,11 @@
             ],
             "settings": [
                  {
-                    "id": "hass_access_url",
-                    "name": "Homeassistant 登录地址",
+                    "id": "hass_api_url",
+                    "name": "Homeassistant API 地址",
                     "val": "",
                     "type": "text",
-                    "desc": "Homeassistant URL"
+                    "desc": "Homeassistant 更新Token服务的 API URL"
                 },                 
                 {
                     "id": "hass_access_token",
