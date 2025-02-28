@@ -59,6 +59,32 @@ async def signin_service(authorization, call: ServiceCall):
     except Exception as e:
         _LOGGER.error("Unexpected error: %s", e)
 
+async def update_token_service(call):
+    """更新 token 服务."""
+    token = call.data.get("token")
+    
+    if token:
+        _LOGGER.info(f"Updating token to: {token}")
+        
+        entries = call.hass.config_entries.async_entries(DOMAIN)
+
+        if entries:
+            entry = entries[0]  # 假设我们只处理一个配置项
+            config = dict(entry.data)
+            config.update({CONF_AUTHORIZATION: token})
+            # 更新 token
+            call.hass.config_entries.async_update_entry(entry, data=config)
+            
+            # 如果你的 Options Flow 使用了更新方法，它将自动触发
+            # 可以根据实际情况调用 flow
+            await call.hass.config_entries.async_reload(entry.entry_id)
+
+            _LOGGER.info("Token updated successfully.")
+        else:
+            _LOGGER.error("No config entry found for Neta Vehicle.")
+    else:
+        _LOGGER.error("No token provided!")
+
 async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.ConfigEntry):
     """Set up Neta Vehicle Status from a config entry."""
     _LOGGER.debug("Setting up Neta Vehicle Status for entry: %s", entry)
@@ -77,6 +103,7 @@ async def async_setup_entry(hass: core.HomeAssistant, entry: config_entries.Conf
 
     # 注册自定义服务
     hass.services.async_register( DOMAIN, "signin", signin_service_wrapper)
+    hass.services.async_register( DOMAIN, "update_token", update_token_service)
     _LOGGER.debug("Action of Neta Vehicle regeisted.")
 
     # 创建 UpdateCoordinator 实例
@@ -111,6 +138,7 @@ async def async_reload_entry(hass: core.HomeAssistant, entry: config_entries.Con
 
     # 取消注册服务
     hass.services.async_remove(DOMAIN, "signin")
+    hass.services.async_remove(DOMAIN, "update_token")
 
     # Unload the current platform first
     await async_unload_entry(hass, entry)
