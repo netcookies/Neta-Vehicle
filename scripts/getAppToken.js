@@ -3,12 +3,15 @@ const $ = new Env("NETA_VEHICLE_TOKEN");
 const tokenName = 'NetaVehicle';
 const tokenKey = 'neta_vehicle_token';
 const tokenVal = $request.headers['Authorization'] || $request.headers['authorization'];
+if (tokenVal) {
+     tokenVal = tokenVal.replace('Bearer ', '');
+}
 const oldTokenVal = $.getdata(tokenKey);
 
 // 判断旧的token和新的token是否不同
 if (tokenVal && tokenVal !== oldTokenVal) {
     // 去除 'Bearer ' 前缀并更新 token
-    $.setdata(tokenVal.replace('Bearer ', ''), tokenKey);
+    $.setdata(tokenVal, tokenKey);
     
     // 构造消息并发送通知
     let msg = `${tokenName}`;
