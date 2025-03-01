@@ -42,7 +42,6 @@ if (tokenVal && tokenVal !== oldTokenVal) {
     }).then(response =>{
          $.log(JSON.stringify(response.headers));
          $.notify("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
-         return response.body
     }).catch((e) => {
          $.notify("NetaVehicle 更新失败", "❌ API 请求错误", e);
     });
