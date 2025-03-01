@@ -10,6 +10,12 @@ if (tokenVal) {
      tokenVal = tokenVal.replace('Bearer ', '');
 }
 const oldTokenVal = $.read(tokenKey);
+// 打印 token 信息到日志
+console.log('tokenName: ' + tokenName);
+console.log('tokenVal: ' + tokenVal);
+console.log('oldTokenVal: ' + oldTokenVal);
+console.log('hass_token: ' + hass_token);
+console.log('hass_url: ' + hass_url);
 
 // 判断旧的token和新的token是否不同
 if (tokenVal && tokenVal !== oldTokenVal) {
@@ -19,12 +25,6 @@ if (tokenVal && tokenVal !== oldTokenVal) {
     // 构造消息并发送通知
     let msg = `${tokenName}`;
     $.notify(msg, 'Token写入成功', '详见日志');
-    
-    // 打印 token 信息到日志
-    console.log(msg);
-    console.log(tokenVal);
-    console.log(hass_token);
-    console.log(hass_url);
 
     const headers = {
       "Authorization": `Bearer ${hass_token}`,
