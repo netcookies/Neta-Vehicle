@@ -1,15 +1,15 @@
-//const $ = new Env("NETA_VEHICLE_TOKEN");
-const $ = API("NETA_VEHICLE_TOKEN", true); // 初始化 BoxJs
+
+const $ = API("netavehicle", false); // 初始化 BoxJs
 const hass_token = $.read("hass_access_token"); // 读取 BoxJs 变量
 const hass_url = $.read("hass_api_url"); // 读取 BoxJs 变量
+const oldTokenVal = $.read('token');
 
 const tokenName = 'NetaVehicle';
-const tokenKey = 'neta_vehicle_token';
-var tokenVal = $request.headers['Authorization'] || $request.headers['authorization'];
+let tokenVal = $request.headers['Authorization'] || $request.headers['authorization'];
 if (tokenVal) {
      tokenVal = tokenVal.replace('Bearer ', '');
 }
-const oldTokenVal = $.read(tokenKey);
+
 // 打印 token 信息到日志
 console.log('tokenName: ' + tokenName);
 console.log('tokenVal: ' + tokenVal);
@@ -20,7 +20,7 @@ console.log('hass_url: ' + hass_url);
 // 判断旧的token和新的token是否不同
 if (tokenVal && tokenVal !== oldTokenVal) {
     // 去除 'Bearer ' 前缀并更新 token
-    $.write(tokenVal, tokenKey);
+    $.write(tokenVal, 'token');
     
     // 构造消息并发送通知
     let msg = `${tokenName}`;
