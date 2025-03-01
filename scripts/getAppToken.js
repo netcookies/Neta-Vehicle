@@ -5,7 +5,7 @@ const hass_url = $.read("hass_api_url"); // 读取 BoxJs 变量
 
 const tokenName = 'NetaVehicle';
 const tokenKey = 'neta_vehicle_token';
-const tokenVal = $request.headers['Authorization'] || $request.headers['authorization'];
+var tokenVal = $request.headers['Authorization'] || $request.headers['authorization'];
 if (tokenVal) {
      tokenVal = tokenVal.replace('Bearer ', '');
 }
@@ -23,6 +23,8 @@ if (tokenVal && tokenVal !== oldTokenVal) {
     // 打印 token 信息到日志
     console.log(msg);
     console.log(tokenVal);
+    console.log(hass_token);
+    console.log(hass_url);
 
     const headers = {
       "Authorization": `Bearer ${hass_token}`,
