@@ -39,6 +39,16 @@
                     "description": "authorization token, default value is same as config entry"
                 }
             }
+        },
+        "update_token": {
+            "name": "更新token",
+            "description": "通过api或service更新token",
+            "fields": {
+                "token": {
+                    "name": "authorization token",
+                    "description": "authorization token to updated"
+                }
+            }
         }
     }
 }
