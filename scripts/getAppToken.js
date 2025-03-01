@@ -11,11 +11,11 @@ if (tokenVal) {
 }
 
 // 打印 token 信息到日志
-console.log('tokenName: ' + tokenName);
-console.log('tokenVal: ' + tokenVal);
-console.log('oldTokenVal: ' + oldTokenVal);
-console.log('hass_token: ' + hass_token);
-console.log('hass_url: ' + hass_url);
+$.log('tokenName: ' + tokenName);
+$.log('tokenVal: ' + tokenVal);
+$.log('oldTokenVal: ' + oldTokenVal);
+$.log('hass_token: ' + hass_token);
+$.log('hass_url: ' + hass_url);
 
 // 判断旧的token和新的token是否不同
 if (tokenVal && tokenVal !== oldTokenVal) {
@@ -27,21 +27,24 @@ if (tokenVal && tokenVal !== oldTokenVal) {
     $.notify(msg, 'Token写入成功', '详见日志');
 
     const headers = {
-      "Authorization": `Bearer ${hass_token}`,
-      "Content-Type": "application/json"
+         "Authorization": `Bearer ${hass_token}`,
+         "Content-Type": "application/json"
     };
 
     const body = JSON.stringify({
-      token: tokenVal
+         token: tokenVal
     });
 
-    $.post({ url: hass_url, headers, body }, (err, resp, data) => {
-      if (err) {
-        $.notify("NetaVehicle 更新失败", "❌ API 请求错误", err);
-      } else {
-        $.notify("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
-      }
-    $.done();
+    await $.http.post({
+         url: hass_url,
+         headers,
+         body 
+    }).then(response =>{
+         $.log(JSON.stringify(response.headers));
+         $.notify("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
+         return response.body
+    }).catch((e) => {
+         $.notify("NetaVehicle 更新失败", "❌ API 请求错误", e);
     });
 }
 
