@@ -7,24 +7,24 @@
     "repo": "https://github.com/netcookies/Neta-Vehicle",
     "apps": [
         {
-            "id": "NetaVehicle",
+            "id": "Neta Vehicle",
             "name": "哪吒汽车",
             "keys": [
-                "neta_vehicle_token"
+                "@netavehicle.token"
             ],
             "descs_html": [
                 "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
             ],
             "settings": [              
                 {
-                    "id": "hass_api_url",
+                    "id": "@netavehicle.hass_api_url",
                     "name": "Homeassistant API 地址",
                     "val": "",
                     "type": "text",
                     "desc": "Homeassistant 更新Token服务的 API URL"
                 },                 
                 {
-                    "id": "hass_access_token",
+                    "id": "@netavehicle.hass_access_token",
                     "name": "Homeassistant Access Token",
                     "val": "",
                     "type": "textarea",
@@ -33,7 +33,7 @@
                     "rows": 5
                 },
                 {
-                    "id": "neta_vehicle_token",
+                    "id": "@netavehicle.token",
                     "name": "Neta Vehicle Token",
                     "val": "",
                     "type": "textarea",
