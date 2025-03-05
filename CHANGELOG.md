@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.4...v) (2025-03-05)
+
+
+### Bug Fixes
+
+* async function missing await ([fbd40d3](https://github.com/netcookies/Neta-Vehicle/commit/fbd40d35ad4548d71d2f7bd8508d5935360006d4))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.3...v) (2025-03-01)
 
 
