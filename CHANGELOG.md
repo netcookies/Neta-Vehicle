@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.5...v) (2025-03-05)
+
+
+### Bug Fixes
+
+* regression ([aa8ea53](https://github.com/netcookies/Neta-Vehicle/commit/aa8ea5304c851aad50b26b37e8b8d61e2c270382))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.4...v) (2025-03-05)
 
 
