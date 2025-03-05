@@ -73,7 +73,7 @@ async def update_token_service(call):
             config = dict(entry.data)
             config.update({CONF_AUTHORIZATION: token})
             # 更新 token
-            await call.hass.config_entries.async_update_entry(entry, data=config)
+            call.hass.config_entries.async_update_entry(entry, data=config)
             
             # 如果你的 Options Flow 使用了更新方法，它将自动触发
             # 可以根据实际情况调用 flow
