@@ -66,7 +66,7 @@ async def update_token_service(call):
     if token:
         _LOGGER.info(f"Updating token to: {token}")
         
-        entries = await call.hass.config_entries.async_entries(DOMAIN)
+        entries = call.hass.config_entries.async_entries(DOMAIN)
 
         if entries:
             entry = entries[0]  # 假设我们只处理一个配置项
