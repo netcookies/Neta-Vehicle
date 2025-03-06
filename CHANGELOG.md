@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.6...v) (2025-03-06)
+
+
+### Bug Fixes
+
+* bugs ([bb8b355](https://github.com/netcookies/Neta-Vehicle/commit/bb8b355d37710444b52cf55876c561d10c06478b))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.5...v) (2025-03-05)
 
 
