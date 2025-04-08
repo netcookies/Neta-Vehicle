@@ -50,8 +50,8 @@
 2. **搜索 Neta Vehicle**：
    - 在列表中选择 **Neta Vehicle** 集成。
 
-3. **输入 API 凭证**：
-   - 系统会提示你输入 Neta 车辆的 API 凭证。这些凭证可以通过你的 Neta 车辆账户或官方 API 获取。
+3. **输入 API 凭证（token）**：
+   - 系统会提示你输入 Neta 车辆的 API 凭证。这些凭证参考 **如何获取和更新 API 凭证（token）**。如果用小火箭获取token的话，可以先随便填一个。后面用小火箭更新
 
 4. **保存配置**。
 
@@ -80,6 +80,22 @@ automation:
       data:
         message: "Neta 车辆电池电量低于 20%。"
 ```
+
+## 如何获取和更新 API 凭证（token）
+
+### 有小火箭的情况（推荐）
+1. 安装 [boxJs](https://docs.boxjs.app)
+2. 在小火箭里添加 `https://gh-proxy.com/github.com/netcookies/Neta-Vehicle/blob/main/scripts/getAppToken.sgmodule`
+3. 在小火箭连接的情况下，打开浏览器输入网址 `https://boxjs.com`
+4. 添加订阅 `https://gh-proxy.com/github.com/netcookies/Neta-Vehicle/raw/refs/heads/main/boxjs.json`
+5. 获取 **Homeassistant Access Token**，在homeassistant - 个人设置 - 安全 - 长期访问令牌
+6. 打开boxjs的哪吒汽车应用，添加 **API 地址** `https://{此处填你自己的homeassistant服务器 IP}/api/services/neta_vehicle/update_token`和**Homeassistant Access Token**。
+7. **Neta Vehicle Token**可以先空着或随便填一个
+8. 打开小火箭连接开关，同时在哪吒汽车的 app 里刷新下，就可以自动获取到**Neta Vehicle Token**了。
+
+### 没小火箭的情况，请自行搜索手机抓包教程
+- 抓包获取 Response Header的 Authorization字段， 值类似：`Bearer eyJhbGciOxxxxxxxxx`,其中 `eyJhbGciOxxxxxxxxx`就是**Neta Vehicle Token**
+
 
 ## 常见问题与故障排除
 
