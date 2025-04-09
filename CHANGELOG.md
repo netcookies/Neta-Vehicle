@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.7...v) (2025-04-09)
+
+
+### Features
+
+* rewrite sensor.py ([2c5f7e2](https://github.com/netcookies/Neta-Vehicle/commit/2c5f7e2a477598412f2da70261fa02bf85c34813))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.6...v) (2025-03-06)
 
 
