@@ -3,7 +3,7 @@
 | 字段名称                        | 含义                               | 参考值   |
 |---------------------------------|------------------------------------|----------|
 | power_charge_status             | 充电状态                           | 0        |
-| power_charge_time               | 充电时间                           | 65,534   |
+| power_charge_time               | 充电时间                           | 未充电时：65,534，充电时值为剩余时间  |
 | obc_elect_wire_con_light_sts    | OBC 电气连接状态                   | 0        |
 | obc_charge_voltage              | OBC 充电电压                       | 0        |
 | obc_charge_voltage_inp          | OBC 输入充电电压                   | 0        |
