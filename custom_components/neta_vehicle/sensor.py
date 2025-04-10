@@ -12,8 +12,9 @@ from .const import (
 )
 
 PERCENTAGE_SCALE = 10000  # 百分比转换因子 (0.01%)
-VOLTAGE_SCALE = 1000     # 电压转换因子 (mV to V)
+VOLTAGE_SCALE = 10       # 电压转换因子 (0.1V to V)
 CURRENT_SCALE = 1000     # 电流转换因子 (mA to A)
+CAPACITY_SCALE = 100     # 电池容量转换因子 (0.01Ah to Ah)
 DISTANCE_SCALE = 10      # 距离转换因子 (0.1km to km)
 POWER_SCALE = 1000       # 功率转换因子 (W to kW)
 SPEED_SCALE = 10        # 速度转换因子 (0.1km/h to km/h)
@@ -463,9 +464,10 @@ class RemainingEnergyKwh(BaseSensor):
             # 使用常量进行单位转换
             percentage = float(power_percentage) / PERCENTAGE_SCALE
             voltage = float(battery_voltage) / VOLTAGE_SCALE
+            capacity = float(battery_capacity) / CAPACITY_SCALE
             
             # 计算剩余电量 (kWh)
-            wh = percentage * float(battery_capacity) * voltage
+            wh = percentage * capacity * voltage
             self._state = round(wh / POWER_SCALE, 2)
             _LOGGER.debug("计算结果: percentage=%s, voltage=%s, wh=%s, final_state=%s",
                          percentage, voltage, wh, self._state)
@@ -719,11 +721,12 @@ class EnergyConsumptionPer100Km(BaseSensor):
         if all(v is not None for v in [power_percentage, battery_capacity, battery_voltage, current_distance]):
             percentage = float(power_percentage) / PERCENTAGE_SCALE
             voltage = float(battery_voltage) / VOLTAGE_SCALE
+            capacity = float(battery_capacity) / CAPACITY_SCALE
             if voltage == 0:
                 _LOGGER.warning("电压为0，跳过本次单位能耗计算")
                 return
  
-            current_energy = percentage * float(battery_capacity) * voltage / POWER_SCALE
+            current_energy = percentage * capacity * voltage / POWER_SCALE
             current_distance = float(current_distance) / DISTANCE_SCALE
  
             _LOGGER.debug(
