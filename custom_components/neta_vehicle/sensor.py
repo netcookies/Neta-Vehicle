@@ -50,8 +50,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         RemainingEnergyKwh(coordinator, f"{name} Remaining Energy", vin),
         ChargingPowerKw(coordinator, f"{name} Charging Power", vin),
         DischargingPowerKw(coordinator, f"{name} Discharging Power", vin),
-        TripEnergyConsumptionKwh(coordinator, f"{name} Trip Energy Consumption", vin),
-        EnergyConsumptionPerKm(coordinator, f"{name} Energy Consumption Per Km", vin),
+        ChargingEstimated(coordinator, f"{name} Charging Estimated", vin),
+        EnergyConsumptionPer100Km(coordinator, f"{name} Energy Consumption Per 100Km", vin),
     ]
 
     async_add_entities(sensors)
@@ -383,6 +383,20 @@ class ChargingStatusSensor(BaseSensor):
 
         return attributes
 
+class ChargingEstimated(BaseSensor):
+    def update_state(self, data):
+        """预计充满电所需时间（分钟）"""
+        power_charge_time = data.get("chargingStatus", {}).get("powerChargeTime")
+        if power_charge_time is not None and float(power_charge_time) not in (65534, 65535):
+            self._state = round(float(power_charge_time), 2)
+        else:
+            self._state = None
+        self._attr_icon = "mdi:battery-clock"
+ 
+    @property
+    def unit_of_measurement(self):
+        return "min"
+
 class MileageSensor(BaseSensor):
     def update_state(self, data):
         """更新总里程数。"""
@@ -674,67 +688,80 @@ class TripEnergyTracker:
         """获取历史累计充电能量"""
         return self.total_charging
 
-
-class TripEnergyConsumptionKwh(BaseSensor):
-    """单次行程能耗传感器 (kWh)"""
+class EnergyConsumptionPer100Km(BaseSensor):
+    """单位能耗传感器 (kWh/100km)"""
     def __init__(self, coordinator: UpdateCoordinator, name: str, unique_id_base: str):
         super().__init__(coordinator, name, unique_id_base)
-        self._attr_icon = "mdi:chart-line"
+        self._attr_icon = "mdi:chart-box"
         self.tracker = TripEnergyTracker()
-        
+        self._per_km = None  # 存储每公里能耗用于扩展属性
+ 
     def update_state(self, data):
-        """更新行程能耗状态"""
-        _LOGGER.debug("开始更新行程能耗状态")
-        
+        """更新单位能耗状态"""
+        _LOGGER.debug("开始更新单位能耗状态")
+ 
         # 获取当前剩余电量（kWh）
         power_percentage = data.get("enduranceStatus", {}).get("powerPercentage", 0)
         battery_capacity = data.get("enduranceStatus", {}).get("bmsBatteryTotalCapacity", 0)
         battery_voltage = data.get("vehicleExtend", {}).get("batVoltage", 0)
         current_distance = data.get("vehicleBasic", {}).get("mileage")
         charge_status = data.get("vehicleBasic", {}).get("chargeStatus")
-        
+ 
         _LOGGER.debug(
-            "原始数据 - 电量百分比: %s, 电池容量: %s, 电压: %s, 里程: %s, 充电状态: %s",
-            power_percentage, battery_capacity, battery_voltage, current_distance, charge_status
+            "原始数据 - 电量百分比: %s, 电池容量: %s, 电压: %s, 里程: %s",
+            power_percentage, battery_capacity, battery_voltage, current_distance
         )
-
+ 
         if isinstance(battery_voltage, list) and battery_voltage:
             battery_voltage = battery_voltage[0]
             _LOGGER.debug("电压是列表，使用第一个值: %s", battery_voltage)
-        
+ 
         if all(v is not None for v in [power_percentage, battery_capacity, battery_voltage, current_distance]):
             percentage = float(power_percentage) / PERCENTAGE_SCALE
             voltage = float(battery_voltage) / VOLTAGE_SCALE
+            if voltage == 0:
+                _LOGGER.warning("电压为0，跳过本次单位能耗计算")
+                return
+ 
             current_energy = percentage * float(battery_capacity) * voltage / POWER_SCALE
             current_distance = float(current_distance) / DISTANCE_SCALE
-            
+ 
             _LOGGER.debug(
                 "转换后数据 - 百分比: %.2f, 电压: %.2f, 当前能量: %.2f kWh, 当前距离: %.2f km",
                 percentage, voltage, current_energy, current_distance
             )
-            
+ 
             self.tracker.add_sample(datetime.now(), current_energy, current_distance, charge_status)
-            
+ 
             result = self.tracker.calculate_consumption()
             if result:
-                energy_diff, _ = result
-                self._state = round(energy_diff, 2)
-                _LOGGER.debug("更新状态成功: %.2f kWh", self._state)
+                energy_diff, distance_diff = result
+                if distance_diff > 0:
+                    self._per_km = round(energy_diff / distance_diff, 4)  # 保存每公里能耗
+                    self._state = round(self._per_km * 100, 2)  # 每百公里能耗
+                    _LOGGER.debug("更新状态成功: %.2f kWh/100km", self._state)
+                else:
+                    self._state = None
+                    self._per_km = None
+                    _LOGGER.debug("距离差为0，状态设为 None")
             else:
                 self._state = None
+                self._per_km = None
                 _LOGGER.debug("计算结果为空，状态设为 None")
         else:
             self._state = None
+            self._per_km = None
             _LOGGER.debug("数据不完整，状态设为 None")
-
+ 
     @property
     def unit_of_measurement(self):
-        return "kWh"
-
+        return "kWh/100km"
+ 
     @property
     def extra_state_attributes(self):
         """传感器的额外状态属性：每日能耗和历史累计能耗"""
         return {
+            "per_km_consumption": self._per_km,  # 每公里能耗（kWh/km）
             "daily_consumption": self.tracker.get_daily_consumption(datetime.now().date()),  # 今天的能耗
             "total_consumption": self.tracker.get_total_consumption(),  # 总能耗
             "daily_recovery": self.tracker.get_daily_recovery(datetime.now().date()),  # 今天的能量回收
@@ -742,66 +769,7 @@ class TripEnergyConsumptionKwh(BaseSensor):
             "daily_charging": self.tracker.get_daily_charging(datetime.now().date()),  # 今天的充电能量
             "total_charging": self.tracker.get_total_charging()  # 总充电能量
         }
-
-class EnergyConsumptionPerKm(BaseSensor):
-    """单位能耗传感器 (kWh/km)"""
-    def __init__(self, coordinator: UpdateCoordinator, name: str, unique_id_base: str):
-        super().__init__(coordinator, name, unique_id_base)
-        self._attr_icon = "mdi:chart-box"
-        self.tracker = TripEnergyTracker()
-        
-    def update_state(self, data):
-        """更新单位能耗状态"""
-        _LOGGER.debug("开始更新单位能耗状态")
-        
-        # 获取当前剩余电量（kWh）
-        power_percentage = data.get("enduranceStatus", {}).get("powerPercentage", 0)
-        battery_capacity = data.get("enduranceStatus", {}).get("bmsBatteryTotalCapacity", 0)
-        battery_voltage = data.get("vehicleExtend", {}).get("batVoltage", 0)
-        current_distance = data.get("vehicleBasic", {}).get("mileage")
-        charge_status = data.get("vehicleBasic", {}).get("chargeStatus")
-        
-        _LOGGER.debug(
-            "原始数据 - 电量百分比: %s, 电池容量: %s, 电压: %s, 里程: %s",
-            power_percentage, battery_capacity, battery_voltage, current_distance
-        )
-
-        if isinstance(battery_voltage, list) and battery_voltage:
-            battery_voltage = battery_voltage[0]
-            _LOGGER.debug("电压是列表，使用第一个值: %s", battery_voltage)
-        
-        if all(v is not None for v in [power_percentage, battery_capacity, battery_voltage, current_distance]):
-            percentage = float(power_percentage) / PERCENTAGE_SCALE
-            voltage = float(battery_voltage) / VOLTAGE_SCALE
-            current_energy = percentage * float(battery_capacity) * voltage / POWER_SCALE
-            current_distance = float(current_distance) / DISTANCE_SCALE
-            
-            _LOGGER.debug(
-                "转换后数据 - 百分比: %.2f, 电压: %.2f, 当前能量: %.2f kWh, 当前距离: %.2f km",
-                percentage, voltage, current_energy, current_distance
-            )
-            
-            self.tracker.add_sample(datetime.now(), current_energy, current_distance, charge_status)
-            
-            result = self.tracker.calculate_consumption()
-            if result:
-                energy_diff, distance_diff = result
-                if distance_diff > 0:
-                    self._state = round(energy_diff / distance_diff, 2)
-                    _LOGGER.debug("更新状态成功: %.2f kWh/km", self._state)
-                else:
-                    self._state = None
-                    _LOGGER.debug("距离差为0，状态设为 None")
-            else:
-                self._state = None
-                _LOGGER.debug("计算结果为空，状态设为 None")
-        else:
-            self._state = None
-            _LOGGER.debug("数据不完整，状态设为 None")
-
-    @property
-    def unit_of_measurement(self):
-        return "kWh/km"
+ 
 
 class LocationSensor(TrackerEntity):
     def __init__(self, coordinator: UpdateCoordinator, name: str, unique_id_base: str, hass):
