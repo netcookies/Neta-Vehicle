@@ -445,6 +445,9 @@ class RemainingEnergyKwh(BaseSensor):
         _LOGGER.debug("开始更新剩余电能状态")
         
         self._attr_icon = "mdi:battery-charging-100"
+        self._attr_device_class = "energy"  # 设置 device_class
+        self._attr_state_class = "total_increasing"  # 设置 state_class
+                          
         power_percentage = data.get("enduranceStatus", {}).get("powerPercentage", 0)
         battery_capacity = data.get("enduranceStatus", {}).get("bmsBatteryTotalCapacity", 0)
         battery_voltage = data.get("vehicleExtend", {}).get("batVoltage", 0)
@@ -631,6 +634,8 @@ class EnergyConsumptionPer100Km(BaseSensor):
     def __init__(self, coordinator: UpdateCoordinator, name: str, unique_id_base: str):
         super().__init__(coordinator, name, unique_id_base)
         self._attr_icon = "mdi:chart-box"
+        self._attr_device_class = "energy"  # 设置 device_class
+        self._attr_state_class = "total_increasing"  # 设置 state_class
         self.tracker = TripEnergyTracker()
         self._per_km = None  # 存储每公里能耗用于扩展属性
  
