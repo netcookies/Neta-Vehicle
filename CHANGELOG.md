@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.4...v) (2025-04-10)
+
+
+### Features
+
+* remove unnecessary sensor ([799483a](https://github.com/netcookies/Neta-Vehicle/commit/799483a685614dda30a425c127bed01518c1faf4))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.3...v) (2025-04-10)
 
 
