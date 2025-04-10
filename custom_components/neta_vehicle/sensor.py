@@ -561,6 +561,18 @@ class TripEnergyTracker:
                 self.samples = []
             else:
                 self.charging_detected = False
+                _LOGGER.debug(
+                    "能量变化 - 当前能量: %.2f kWh, 上次能量: %.2f kWh, 差值: %.2f kWh",
+                    energy_kwh, self.last_energy, energy_diff
+                )
+                # 更新按天的能耗数据
+                day = timestamp.date()
+                if day not in self.daily_consumption:
+                    self.daily_consumption[day] = 0
+                self.daily_consumption[day] += energy_diff
+
+                # 更新历史累计能耗
+                self.total_consumption += energy_diff
         
         self.samples.append((timestamp, energy_kwh, distance_km))
         self.last_energy = energy_kwh
@@ -573,15 +585,6 @@ class TripEnergyTracker:
         self.samples = [s for s in self.samples if s[0] >= cutoff_time]
         if len(self.samples) != original_len:
             _LOGGER.debug("清理过期数据 - 原始数量: %d, 当前数量: %d", original_len, len(self.samples))
-        
-        # 更新按天的能耗数据
-        day = timestamp.date()
-        if day not in self.daily_consumption:
-            self.daily_consumption[day] = 0
-        self.daily_consumption[day] += energy_kwh
-        
-        # 更新历史累计能耗
-        self.total_consumption += energy_kwh
     
     def calculate_consumption(self) -> Optional[Tuple[float, float]]:
         """计算能耗和行驶距离"""
