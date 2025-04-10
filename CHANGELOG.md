@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.5...v) (2025-04-10)
+
+
+### Features
+
+* support energy board ([1bc9fb3](https://github.com/netcookies/Neta-Vehicle/commit/1bc9fb3d32ceee41f10f7bcbaa5d4c733558ece4))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.4...v) (2025-04-10)
 
 
