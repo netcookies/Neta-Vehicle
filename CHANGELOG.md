@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.8...v) (2025-04-10)
+
+
+### Features
+
+* add energy sersor ([32019e4](https://github.com/netcookies/Neta-Vehicle/commit/32019e4199e244ce49b7b578296b4af1a9f8ea82))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.7.7...v) (2025-04-09)
 
 
