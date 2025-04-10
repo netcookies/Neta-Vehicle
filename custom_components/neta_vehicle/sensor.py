@@ -759,6 +759,7 @@ class EnergyConsumptionPerKm(BaseSensor):
         battery_capacity = data.get("enduranceStatus", {}).get("bmsBatteryTotalCapacity", 0)
         battery_voltage = data.get("vehicleExtend", {}).get("batVoltage", 0)
         current_distance = data.get("vehicleBasic", {}).get("mileage")
+        charge_status = data.get("vehicleBasic", {}).get("chargeStatus")
         
         _LOGGER.debug(
             "原始数据 - 电量百分比: %s, 电池容量: %s, 电压: %s, 里程: %s",
@@ -780,7 +781,7 @@ class EnergyConsumptionPerKm(BaseSensor):
                 percentage, voltage, current_energy, current_distance
             )
             
-            self.tracker.add_sample(datetime.now(), current_energy, current_distance)
+            self.tracker.add_sample(datetime.now(), current_energy, current_distance, charge_status)
             
             result = self.tracker.calculate_consumption()
             if result:
