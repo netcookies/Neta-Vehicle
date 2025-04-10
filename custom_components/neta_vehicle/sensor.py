@@ -535,9 +535,13 @@ class TripEnergyTracker:
         self.SAMPLE_INTERVAL = 60  # 采样间隔（秒）
         self.CHARGING_THRESHOLD = 0.2  # 充电检测阈值（kWh）
         self.daily_consumption = {}  # 按天统计的能耗 (日期 -> 能量消耗)
+        self.daily_recovery = {}  # 按天统计的能量回收 (日期 -> 能量回收)
+        self.daily_charging = {}  # 按天统计的充电能量 (日期 -> 充电能量)
         self.total_consumption = 0  # 历史累计能耗
+        self.total_recovery = 0  # 历史累计能量回收
+        self.total_charging = 0  # 历史累计充电能量
         
-    def add_sample(self, timestamp: datetime, energy_kwh: float, distance_km: float) -> None:
+    def add_sample(self, timestamp: datetime, energy_kwh: float, distance_km: float, charge_status: int) -> None:
         """添加一个采样点"""
         # 检查是否达到采样间隔
         if self.last_sample_time and (timestamp - self.last_sample_time).total_seconds() < self.SAMPLE_INTERVAL:
@@ -549,31 +553,46 @@ class TripEnergyTracker:
             timestamp.isoformat(), energy_kwh, distance_km
         )
         
-        # 检测是否发生充电（考虑动能回收）
+        # 检测是否发生充电或能量变化
         if self.last_energy is not None:
             energy_diff = energy_kwh - self.last_energy
-            if energy_diff > self.CHARGING_THRESHOLD:  # 只有超过阈值才认为是充电
-                _LOGGER.debug(
-                    "检测到充电 - 当前能量: %.2f kWh, 上次能量: %.2f kWh, 差值: %.2f kWh",
-                    energy_kwh, self.last_energy, energy_diff
-                )
-                self.charging_detected = True
-                self.samples = []
-            else:
-                self.charging_detected = False
-                _LOGGER.debug(
-                    "能量变化 - 当前能量: %.2f kWh, 上次能量: %.2f kWh, 差值: %.2f kWh",
-                    energy_kwh, self.last_energy, energy_diff
-                )
+            if charge_status == 1:  # 充电中
+                if energy_diff > 0:
+                    _LOGGER.debug("充电中 - 当前能量: %.2f kWh, 上次能量: %.2f kWh, 差值: %.2f kWh", energy_kwh, self.last_energy, energy_diff)
+                    
+                    # 更新充电数据
+                    day = timestamp.date()
+                    if day not in self.daily_charging:
+                        self.daily_charging[day] = 0
+                    self.daily_charging[day] += energy_diff  # 充电能量增加
+                    
+                    # 更新历史累计充电数据
+                    self.total_charging += energy_diff  # 总充电能量增加
+
+            elif energy_diff < 0:  # 能量减少时，认为是消耗
+                _LOGGER.debug("能量消耗 - 当前能量: %.2f kWh, 上次能量: %.2f kWh, 差值: %.2f kWh", energy_kwh, self.last_energy, energy_diff)
+                
                 # 更新按天的能耗数据
                 day = timestamp.date()
                 if day not in self.daily_consumption:
                     self.daily_consumption[day] = 0
-                self.daily_consumption[day] += energy_diff
+                self.daily_consumption[day] -= energy_diff  # 能量消耗
 
                 # 更新历史累计能耗
-                self.total_consumption += energy_diff
-        
+                self.total_consumption -= energy_diff  # 总能耗减少
+
+            elif energy_diff > 0:  # 能量增加时，认为是回收
+                _LOGGER.debug("能量回收 - 当前能量: %.2f kWh, 上次能量: %.2f kWh, 差值: %.2f kWh", energy_kwh, self.last_energy, energy_diff)
+                
+                # 更新按天的能量回收数据
+                day = timestamp.date()
+                if day not in self.daily_recovery:
+                    self.daily_recovery[day] = 0
+                self.daily_recovery[day] += energy_diff  # 能量回收
+                
+                # 更新历史累计能量回收
+                self.total_recovery += energy_diff  # 总能量回收
+
         self.samples.append((timestamp, energy_kwh, distance_km))
         self.last_energy = energy_kwh
         self.last_distance = distance_km
@@ -635,9 +654,26 @@ class TripEnergyTracker:
         """获取指定日期的能耗"""
         return self.daily_consumption.get(day, 0)
 
+    def get_daily_recovery(self, day: date) -> float:
+        """获取指定日期的能量回收"""
+        return self.daily_recovery.get(day, 0)
+
+    def get_daily_charging(self, day: date) -> float:
+        """获取指定日期的充电能量"""
+        return self.daily_charging.get(day, 0)
+
     def get_total_consumption(self) -> float:
         """获取历史累计能耗"""
         return self.total_consumption
+
+    def get_total_recovery(self) -> float:
+        """获取历史累计能量回收"""
+        return self.total_recovery
+
+    def get_total_charging(self) -> float:
+        """获取历史累计充电能量"""
+        return self.total_charging
+
 
 class TripEnergyConsumptionKwh(BaseSensor):
     """单次行程能耗传感器 (kWh)"""
@@ -655,19 +691,18 @@ class TripEnergyConsumptionKwh(BaseSensor):
         battery_capacity = data.get("enduranceStatus", {}).get("bmsBatteryTotalCapacity", 0)
         battery_voltage = data.get("vehicleExtend", {}).get("batVoltage", 0)
         current_distance = data.get("vehicleBasic", {}).get("mileage")
+        charge_status = data.get("vehicleBasic", {}).get("chargeStatus")
         
         _LOGGER.debug(
-            "原始数据 - 电量百分比: %s, 电池容量: %s, 电压: %s, 里程: %s",
-            power_percentage, battery_capacity, battery_voltage, current_distance
+            "原始数据 - 电量百分比: %s, 电池容量: %s, 电压: %s, 里程: %s, 充电状态: %s",
+            power_percentage, battery_capacity, battery_voltage, current_distance, charge_status
         )
 
-        # 检查 battery_voltage 是否为列表
         if isinstance(battery_voltage, list) and battery_voltage:
             battery_voltage = battery_voltage[0]
             _LOGGER.debug("电压是列表，使用第一个值: %s", battery_voltage)
         
         if all(v is not None for v in [power_percentage, battery_capacity, battery_voltage, current_distance]):
-            # 使用常量进行单位转换
             percentage = float(power_percentage) / PERCENTAGE_SCALE
             voltage = float(battery_voltage) / VOLTAGE_SCALE
             current_energy = percentage * float(battery_capacity) * voltage / POWER_SCALE
@@ -678,7 +713,7 @@ class TripEnergyConsumptionKwh(BaseSensor):
                 percentage, voltage, current_energy, current_distance
             )
             
-            self.tracker.add_sample(datetime.now(), current_energy, current_distance)
+            self.tracker.add_sample(datetime.now(), current_energy, current_distance, charge_status)
             
             result = self.tracker.calculate_consumption()
             if result:
@@ -701,16 +736,12 @@ class TripEnergyConsumptionKwh(BaseSensor):
         """传感器的额外状态属性：每日能耗和历史累计能耗"""
         return {
             "daily_consumption": self.tracker.get_daily_consumption(datetime.now().date()),  # 今天的能耗
-            "total_consumption": self.tracker.get_total_consumption()  # 总能耗
+            "total_consumption": self.tracker.get_total_consumption(),  # 总能耗
+            "daily_recovery": self.tracker.get_daily_recovery(datetime.now().date()),  # 今天的能量回收
+            "total_recovery": self.tracker.get_total_recovery(),  # 总能量回收
+            "daily_charging": self.tracker.get_daily_charging(datetime.now().date()),  # 今天的充电能量
+            "total_charging": self.tracker.get_total_charging()  # 总充电能量
         }
-
-    def get_daily_consumption(self, day: date) -> float:
-        """获取指定日期的能耗"""
-        return self.tracker.get_daily_consumption(day)
-
-    def get_total_consumption(self) -> float:
-        """获取历史累计能耗"""
-        return self.tracker.get_total_consumption()
 
 class EnergyConsumptionPerKm(BaseSensor):
     """单位能耗传感器 (kWh/km)"""
