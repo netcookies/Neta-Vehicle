@@ -49,14 +49,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         FuleRange(coordinator, f"{name} Fuel Range", vin),
         Speed(coordinator, f"{name} Speed", vin),
         RemainingEnergyKwh(coordinator, f"{name} Remaining Energy", vin),
-        ChargingPowerKw(coordinator, f"{name} Charging Power", vin),
-        DischargingPowerKw(coordinator, f"{name} Discharging Power", vin),
         ChargingEstimated(coordinator, f"{name} Charging Estimated", vin),
         EnergyConsumptionPer100Km(coordinator, f"{name} Energy Consumption Per 100Km", vin),
     ]
 
     async_add_entities(sensors)
-
 
 class BaseSensor(SensorEntity):
     def __init__(self, coordinator: UpdateCoordinator, name: str, unique_id_base: str):
@@ -479,67 +476,6 @@ class RemainingEnergyKwh(BaseSensor):
     def unit_of_measurement(self):
         return "kWh"
 
-class ChargingPowerKw(BaseSensor):
-    def update_state(self, data):
-        """充电功率传感器 (kW)"""
-        """更新充电功率状态"""
-        _LOGGER.debug("开始更新充电功率状态")
-        
-        self._attr_icon = "mdi:transmission-tower-export"
-        charge_voltage = data.get("chargingStatus", {}).get("obcChargeVoltage")
-        charge_current = data.get("chargingStatus", {}).get("obcChargeCurrent")
-        
-        _LOGGER.debug("获取到的原始数据: charge_voltage=%s, charge_current=%s",
-                     charge_voltage, charge_current)
-        
-        if charge_voltage is not None and charge_current is not None:
-            # 使用常量进行单位转换
-            voltage = float(charge_voltage) / VOLTAGE_SCALE
-            current = float(charge_current) / CURRENT_SCALE
-            watts = voltage * current
-            self._state = round(watts / POWER_SCALE, 2)
-            _LOGGER.debug("计算结果: voltage=%s, current=%s, watts=%s, final_state=%s",
-                         voltage, current, watts, self._state)
-        else:
-            self._state = None
-            _LOGGER.warning("充电数据不完整，无法计算充电功率")
-
-    @property
-    def unit_of_measurement(self):
-        return "kW"
-
-class DischargingPowerKw(BaseSensor):
-    def update_state(self, data):
-        """放电功率传感器 (kW)"""
-        """更新放电功率状态"""
-        _LOGGER.debug("开始更新放电功率状态")
-        
-        total_voltage = data.get("vehicleBasic", {}).get("totalVoltage")
-        total_current = data.get("vehicleBasic", {}).get("totalCurrent")
-        speed = data.get("vehicleBasic", {}).get("speed")
-        
-        _LOGGER.debug("获取到的原始数据: total_voltage=%s, total_current=%s, speed=%s",
-                     total_voltage, total_current, speed)
-        
-        self._attr_icon = "mdi:transmission-tower-import"
-        
-        # 只在车辆行驶时（速度大于0）计算放电功率
-        if all(v is not None for v in [total_voltage, total_current, speed]) and float(speed) > 0:
-            # 使用常量进行单位转换
-            voltage = float(total_voltage) / VOLTAGE_SCALE
-            current = float(total_current) / CURRENT_SCALE
-            watts = voltage * current
-            self._state = round(watts / POWER_SCALE, 2)
-            _LOGGER.debug("计算结果: voltage=%s, current=%s, watts=%s, final_state=%s",
-                         voltage, current, watts, self._state)
-        else:
-            self._state = None
-            _LOGGER.warning("放电数据不完整或车辆静止，无法计算放电功率")
-
-    @property
-    def unit_of_measurement(self):
-        return "kW"
-
 class TripEnergyTracker:
     """行程能耗追踪器"""
     def __init__(self):
@@ -772,7 +708,6 @@ class EnergyConsumptionPer100Km(BaseSensor):
             "daily_charging": self.tracker.get_daily_charging(datetime.now().date()),  # 今天的充电能量
             "total_charging": self.tracker.get_total_charging()  # 总充电能量
         }
- 
 
 class LocationSensor(TrackerEntity):
     def __init__(self, coordinator: UpdateCoordinator, name: str, unique_id_base: str, hass):
