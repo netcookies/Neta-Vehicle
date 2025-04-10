@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.2...v) (2025-04-10)
+
+
+### Bug Fixes
+
+* update sensor calc logic ([f91628d](https://github.com/netcookies/Neta-Vehicle/commit/f91628de67642352b8797f69d654097e5051b9c0))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.1...v) (2025-04-10)
 
 
