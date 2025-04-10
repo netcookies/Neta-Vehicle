@@ -1,3 +1,12 @@
+# [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.3...v) (2025-04-10)
+
+
+### Bug Fixes
+
+* calc logic ([80f670a](https://github.com/netcookies/Neta-Vehicle/commit/80f670a75a2000a943668fa7109e4253ea62272e))
+
+
+
 # [](https://github.com/netcookies/Neta-Vehicle/compare/v1.8.2...v) (2025-04-10)
 
 
