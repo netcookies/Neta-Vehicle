@@ -398,7 +398,8 @@ class ChargingEstimated(BaseSensor):
 class MileageSensor(BaseSensor):
     def update_state(self, data):
         """更新总里程数。"""
-        self._state = data.get("vehicleBasic", {}).get("mileage")
+        mileage = data.get("vehicleBasic", {}).get("mileage")
+        self._state = round(float(mileage) / DISTANCE_SCALE , 2)
         self._attr_icon = "mdi:counter"
 
     @property
@@ -409,7 +410,7 @@ class BatteryRange(BaseSensor):
     def update_state(self, data):
         """剩余电池里程数。"""
         power_residue_mileage = data.get("enduranceStatus", {}).get("powerResidueMileage")
-        self._state = round(float(power_residue_mileage) / 10 , 2)
+        self._state = round(float(power_residue_mileage) / DISTANCE_SCALE , 2)
         self._attr_icon = "mdi:map-marker-distance"
 
     @property
@@ -420,7 +421,7 @@ class FuleRange(BaseSensor):
     def update_state(self, data):
         """剩余汽油里程数。"""
         fuel_mileage_remaining = data.get("enduranceStatus", {}).get("fuelMileageRemaining")
-        self._state = round(float(fuel_mileage_remaining) / 10 , 2)
+        self._state = round(float(fuel_mileage_remaining) / DISTANCE_SCALE , 2)
         self._attr_icon = "mdi:gas-station-outline"
 
     @property
