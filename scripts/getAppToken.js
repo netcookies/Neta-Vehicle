@@ -8,7 +8,7 @@ const authHeaderKey = Object.keys($request.headers).find(k => k.toLowerCase() ==
 let tokenVal = authHeaderKey ? $request.headers[authHeaderKey].replace("Bearer ", "") : null;
 
 // 记录调试信息
-$.log(`[INFO] 处理 Token 更新`);
+$.log(`[INFO] 处理 Token 更新!`);
 $.log(`tokenName: ${tokenName}`);
 $.log(`新 Token: ${tokenVal}`);
 $.log(`旧 Token: ${oldTokenVal}`);
