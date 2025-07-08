@@ -1,0 +1,21 @@
+name: "🚗 哪吒汽车 [获取Token]""
+desc: "获取Token用。打开哪吒汽车App。"
+author: "netcookies"
+homepage: "https://github.com/netcookies/Neta-Vehicle"
+manual: "https://github.com/netcookies/Neta-Vehicle"
+icon: "https://brands.home-assistant.io/neta_vehicle/icon.png"
+category: "刷新 Token"
+
+http:
+  mitm:
+      - "appapi-pki.chehezhi.cn:18443"
+  script:
+    - match: ^https:\/\/appapi-pki\.chehezhi\.cn:18443\/pivot\/veh-status\/vehicle-status-control\/1\.0\/getAppVehicleData
+      type: request
+      name: NetaApp
+      timeout: 120
+
+script-providers:
+  NetaApp:
+    url: https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js
+    interval: 86400
