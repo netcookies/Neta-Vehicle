@@ -12,7 +12,7 @@ http:
   script:
     - match: ^https:\/\/appapi-pki\.chehezhi\.cn:18443\/pivot\/veh-status\/vehicle-status-control\/1\.0\/getAppVehicleData
       type: request
-      name: NetaApp
+      name: NetaVehicle
       timeout: 120
 
 script-providers:
