@@ -1,5 +1,5 @@
 const $ = new Env("netavehicle"); // 初始化 BoxJs
-const version = '0.1.1'
+const version = '0.1.2'
 let $.logLevel = 'debug'
 const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
 const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
