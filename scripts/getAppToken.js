@@ -1,7 +1,7 @@
 const $ = new Env("netavehicle"); // 初始化 BoxJs
-const hass_token = $.getdata("hass_access_token"); // 读取 Home Assistant 访问 Token
-const hass_url = $.getdata("hass_api_url"); // 读取 Home Assistant API 地址
-const oldTokenVal = $.getdata("token"); // 读取本地存储的旧 Token
+const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
+const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
+const oldTokenVal = $.getdata("@netavehicle.token"); // 读取本地存储的旧 Token
 
 const tokenName = "NetaVehicle";
 const authHeaderKey = Object.keys($request.headers).find(k => k.toLowerCase() === "authorization");
