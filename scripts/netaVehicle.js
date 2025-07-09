@@ -1,12 +1,14 @@
 const $ = new Env("netavehicle", { logLevel: 'info' }); // 初始化 BoxJs
-const version = '0.1.8';
+const version = '0.1.9';
 
 !(async () => {
     try {
         $.info(`开始处理 Token 更新! version: ${version} - ${$.getEnv()}`);
-        await updateToken();
+        let result = await updateToken();
         await $.wait('1000');
-        $.msg("NetaVehicle 更新成功", "✅ Token 已更新");
+        if (result) {
+            $.msg("NetaVehicle 更新成功", "✅ Token 已更新");
+        }
     } catch (e) {
         $.error(`API 请求失败: ${e}`);
         $.msg("NetaVehicle 更新失败", "❌ API 请求错误", e);
@@ -57,7 +59,7 @@ async function updateToken() {
                     throw new Error(`请求失败，状态码: ${response.statusCode}`);
                 }
 
-                return response.body;
+                return true;
             }).catch(error => {
                 $.error(`HTTP 请求捕获错误: ${error.message || error}`);
                 throw error;
@@ -67,6 +69,7 @@ async function updateToken() {
             return "Home Assistant 配置缺失";
         }
     }
+    return false;
 }
 
 // prettier-ignore
