@@ -16,6 +16,6 @@ http:
       timeout: 120
 
 script-providers:
-  NetaApp:
-    url: https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js
+  NetaVehicle:
+    url: https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/netaVehicle.js
     interval: 86400
