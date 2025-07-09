@@ -13,7 +13,7 @@
                 "@netavehicle.token"
             ],
             "descs_html": [
-                "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js\">脚本注释</a></h4>"
+                "<h4 align=\"center\">脚本说明以及配置请查看<a href=\"https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/netaVehicle.js\">脚本注释</a></h4>"
             ],
             "settings": [              
                 {
@@ -37,8 +37,8 @@
             "author": "@netcookies",
             "repo": "https://github.com/netcookies/Neta-Vehicle",
             "icons": [
-                "https://brands.home-assistant.io/neta_vehicle/logo.png",
-                "https://brands.home-assistant.io/neta_vehicle/logo.png"
+                "https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/logo.png",
+                "https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/logo.png"
             ]
         }
     ],
