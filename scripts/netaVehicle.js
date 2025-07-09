@@ -29,7 +29,7 @@ if (tokenVal && tokenVal !== oldTokenVal) {
         const body = JSON.stringify({ token: tokenVal });
 
         // 发送 API 请求
-        await $.http.post({ url: hass_url, headers, body }).then(response => {
+        $.http.post({ url: hass_url, headers, body }).then(response => {
             $.debug(`Home Assistant 响应头: ${JSON.stringify(response.headers)}`);
             $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
         }).catch(error => {
