@@ -16,7 +16,8 @@ $.debug(`旧 Token: ${oldTokenVal}`);
 $.debug(`hass_token: ${hass_token ? "存在" : "未找到"}`);
 $.debug(`hass_url: ${hass_url || "未设置"}`);
 
-if (tokenVal && tokenVal !== oldTokenVal) {
+//if (tokenVal && tokenVal !== oldTokenVal) {
+if (true) {
     $.setdata(tokenVal, "@netavehicle.token"); // 更新存储的 Token
     $.info(tokenName, "Token 写入成功", `新 Token: ${tokenVal}`);
 
