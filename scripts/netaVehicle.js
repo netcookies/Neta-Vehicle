@@ -1,5 +1,5 @@
 const $ = new Env("netavehicle", { logLevel: 'debug' }); // 初始化 BoxJs
-const version = '0.1.4';
+const version = '0.1.5';
 const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
 const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
 const oldTokenVal = $.getdata("@netavehicle.token"); // 读取本地存储的旧 Token
@@ -16,41 +16,48 @@ $.debug(`旧 Token: ${oldTokenVal}`);
 $.debug(`hass_token: ${hass_token ? "存在" : "未找到"}`);
 $.debug(`hass_url: ${hass_url || "未设置"}`);
 
-if (tokenVal && tokenVal !== oldTokenVal) {
-    $.setdata(tokenVal, "@netavehicle.token"); // 更新存储的 Token
-    $.info(tokenName, "Token 写入成功", `新 Token: ${tokenVal}`);
+async function updateToken() {
+    if (tokenVal && tokenVal !== oldTokenVal) {
+        $.setdata(tokenVal, "@netavehicle.token"); // 更新存储的 Token
+        $.info(tokenName, "Token 写入成功", `新 Token: ${tokenVal}`);
 
-    if (hass_url && hass_token) {
-        $.debug(`开始构造 http 请求!`);
-        let option = {
-            url: hass_url,
-            headers: {
-                "Authorization": `Bearer ${hass_token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ token: tokenVal }) // 请求体需要是 JSON 格式化的字符串
-        };
+        if (hass_url && hass_token) {
+            let option = {
+                url: hass_url,
+                headers: {
+                    "Authorization": `Bearer ${hass_token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ token: tokenVal }) // 请求体需要是 JSON 格式化的字符串
+            };
 
-        // 使用 $.post 发送 API 请求
-        $.debug(`option: ${option}`);
-        $.post(option, (error, response, data) => {
-            if (error) {
+            try {
+                // 使用 await 调用 $.http.post
+                let result = await $.http.post(option).then(response => {
+                    // 调试信息放在 .then 内部
+                    $.debug(`请求已发送，URL: ${option.url}`);
+                    $.debug(`请求头: ${JSON.stringify(option.headers)}`);
+                    $.debug(`请求体: ${option.body}`);
+                    $.debug(`响应状态码: ${response.statusCode}`);
+                    $.debug(`响应体: ${response.body}`);
+                    return response.body;
+                });
+
+                // 解析返回结果并处理
+                $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
+            } catch (error) {
+                // 捕获错误并处理
                 $.error(`API 请求失败: ${error}`);
                 $.msg("NetaVehicle 更新失败", "❌ API 请求错误", error);
-            } else if (response && response.statusCode === 200) {
-                $.debug(`Home Assistant 响应头: ${JSON.stringify(response.headers)}`);
-                $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
-            } else {
-                let statusCode = response ? response.statusCode : "未知";
-                $.error(`API 请求失败: 状态码 ${statusCode}`);
-                $.msg("NetaVehicle 更新失败", "❌ API 请求错误", `状态码: ${statusCode}`);
             }
-        });
-        $.debug(`post结束!`);
-    } else {
-        $.msg("NetaVehicle 更新失败", "❌ Home Assistant 配置缺失", "请检查 hass_url 和 hass_token 设置");
+        } else {
+            $.msg("NetaVehicle 更新失败", "❌ Home Assistant 配置缺失", "请检查 hass_url 和 hass_token 设置");
+        }
     }
 }
+
+// 调用 async 函数
+updateToken();
 
 $.done();
 
