@@ -37,6 +37,7 @@
             "author": "@netcookies",
             "repo": "https://github.com/netcookies/Neta-Vehicle",
             "icons": [
+                "https://brands.home-assistant.io/neta_vehicle/logo.png"，
                 "https://brands.home-assistant.io/neta_vehicle/logo.png"
             ]
         }
