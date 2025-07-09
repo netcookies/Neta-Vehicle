@@ -31,15 +31,6 @@
                     "desc": "Homeassistant 的长效登录token",
                     "autoGrow": true,
                     "rows": 5
-                },
-                {
-                    "id": "@netavehicle.token",
-                    "name": "Neta Vehicle Token",
-                    "val": "",
-                    "type": "textarea",
-                    "desc": "哪吒汽车Toekn",
-                    "autoGrow": true,
-                    "rows": 10
                 }
             ],
             "script": "https://raw.githubusercontent.com/netcookies/Neta-Vehicle/refs/heads/main/scripts/getAppToken.js",
