@@ -1,4 +1,5 @@
 const $ = new Env("netavehicle"); // 初始化 BoxJs
+const version = '0.1.0'
 let $.logLevel = 'debug'
 const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
 const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
@@ -9,7 +10,7 @@ const authHeaderKey = Object.keys($request.headers).find(k => k.toLowerCase() ==
 let tokenVal = authHeaderKey ? $request.headers[authHeaderKey].replace("Bearer ", "") : null;
 
 // 记录调试信息
-$.info(`处理 Token 更新!`);
+$.info(`处理 Token 更新! version: ${version}`);
 $.debug(`tokenName: ${tokenName}`);
 $.debug(`新 Token: ${tokenVal}`);
 $.debug(`旧 Token: ${oldTokenVal}`);
