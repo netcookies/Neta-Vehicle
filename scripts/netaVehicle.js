@@ -1,5 +1,5 @@
 const $ = new Env("netavehicle", { logLevel: 'debug' }); // 初始化 BoxJs
-const version = '0.1.3';
+const version = '0.1.4';
 const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
 const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
 const oldTokenVal = $.getdata("@netavehicle.token"); // 读取本地存储的旧 Token
@@ -32,6 +32,7 @@ if (tokenVal && tokenVal !== oldTokenVal) {
         };
 
         // 使用 $.post 发送 API 请求
+        $.debug(`option: ${option}`);
         $.post(option, (error, response, data) => {
             if (error) {
                 $.error(`API 请求失败: ${error}`);
@@ -45,6 +46,7 @@ if (tokenVal && tokenVal !== oldTokenVal) {
                 $.msg("NetaVehicle 更新失败", "❌ API 请求错误", `状态码: ${statusCode}`);
             }
         });
+        $.debug(`post结束!`);
     } else {
         $.msg("NetaVehicle 更新失败", "❌ Home Assistant 配置缺失", "请检查 hass_url 和 hass_token 设置");
     }
