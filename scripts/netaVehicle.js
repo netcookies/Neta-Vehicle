@@ -1,11 +1,12 @@
-const $ = new Env("netavehicle", { logLevel: 'debug' }); // 初始化 BoxJs
-const version = '0.1.7';
+const $ = new Env("netavehicle", { logLevel: 'info' }); // 初始化 BoxJs
+const version = '0.1.8';
 
 !(async () => {
     try {
-        let result = await updateToken();
+        $.info(`开始处理 Token 更新! version: ${version} - ${$.getEnv()}`);
+        await updateToken();
         await $.wait('1000');
-        $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `result: ${result}`);
+        $.msg("NetaVehicle 更新成功", "✅ Token 已更新");
     } catch (e) {
         $.error(`API 请求失败: ${e}`);
         $.msg("NetaVehicle 更新失败", "❌ API 请求错误", e);
@@ -25,7 +26,6 @@ async function updateToken() {
     let tokenVal = authHeaderKey ? $request.headers[authHeaderKey].replace("Bearer ", "") : null;
 
     // 调试信息
-    $.info(`开始处理 Token 更新! version: ${version}`);
     $.debug(`tokenName: ${tokenName}`);
     $.debug(`新 Token: ${tokenVal}`);
     $.debug(`旧 Token: ${oldTokenVal}`);
