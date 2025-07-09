@@ -1,5 +1,5 @@
 const $ = new Env("netavehicle", { logLevel: 'debug' }); // 初始化 BoxJs
-const version = '0.1.5';
+const version = '0.1.6';
 const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
 const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
 const oldTokenVal = $.getdata("@netavehicle.token"); // 读取本地存储的旧 Token
@@ -9,7 +9,7 @@ const authHeaderKey = Object.keys($request.headers).find(k => k.toLowerCase() ==
 let tokenVal = authHeaderKey ? $request.headers[authHeaderKey].replace("Bearer ", "") : null;
 
 // 记录调试信息
-$.info(`处理 Token 更新! version: ${version}`);
+$.info(`开始处理 Token 更新! version: ${version} - ${$.getEnv()}`);
 $.debug(`tokenName: ${tokenName}`);
 $.debug(`新 Token: ${tokenVal}`);
 $.debug(`旧 Token: ${oldTokenVal}`);
@@ -44,7 +44,7 @@ async function updateToken() {
                 });
 
                 // 解析返回结果并处理
-                $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
+                $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `result: ${result}`);
             } catch (error) {
                 // 捕获错误并处理
                 $.error(`API 请求失败: ${error}`);
