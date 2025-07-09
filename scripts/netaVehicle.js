@@ -1,5 +1,5 @@
 const $ = new Env("netavehicle"); // 初始化 BoxJs
-const version = '0.1.0'
+const version = '0.1.1'
 let $.logLevel = 'debug'
 const hass_token = $.getdata("@netavehicle.hass_access_token"); // 读取 Home Assistant 访问 Token
 const hass_url = $.getdata("@netavehicle.hass_api_url"); // 读取 Home Assistant API 地址
@@ -17,29 +17,29 @@ $.debug(`旧 Token: ${oldTokenVal}`);
 $.debug(`hass_token: ${hass_token ? "存在" : "未找到"}`);
 $.debug(`hass_url: ${hass_url || "未设置"}`);
 
-// if (tokenVal && tokenVal !== oldTokenVal) {
-//     $.setdata(tokenVal, "@netavehicle.token"); // 更新存储的 Token
-//     $.info(tokenName, "Token 写入成功", `新 Token: ${tokenVal}`);
+if (tokenVal && tokenVal !== oldTokenVal) {
+    $.setdata(tokenVal, "@netavehicle.token"); // 更新存储的 Token
+    $.info(tokenName, "Token 写入成功", `新 Token: ${tokenVal}`);
 
-//     if (hass_url && hass_token) {
-//         const headers = {
-//             "Authorization": `Bearer ${hass_token}`,
-//             "Content-Type": "application/json"
-//         };
-//         const body = JSON.stringify({ token: tokenVal });
+    if (hass_url && hass_token) {
+        const headers = {
+            "Authorization": `Bearer ${hass_token}`,
+            "Content-Type": "application/json"
+        };
+        const body = JSON.stringify({ token: tokenVal });
 
-//         // 发送 API 请求
-//         await $.http.post({ url: hass_url, headers, body }).then(response => {
-//             $.debug(`Home Assistant 响应头: ${JSON.stringify(response.headers)}`);
-//             $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
-//         }).catch(error => {
-//             $.error(`API 请求失败: ${error}`);
-//             $.msg("NetaVehicle 更新失败", "❌ API 请求错误", error);
-//         });
-//     } else {
-//         $.msg("NetaVehicle 更新失败", "❌ Home Assistant 配置缺失", "请检查 hass_url 和 hass_token 设置");
-//     }
-// }
+        // 发送 API 请求
+        await $.http.post({ url: hass_url, headers, body }).then(response => {
+            $.debug(`Home Assistant 响应头: ${JSON.stringify(response.headers)}`);
+            $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
+        }).catch(error => {
+            $.error(`API 请求失败: ${error}`);
+            $.msg("NetaVehicle 更新失败", "❌ API 请求错误", error);
+        });
+    } else {
+        $.msg("NetaVehicle 更新失败", "❌ Home Assistant 配置缺失", "请检查 hass_url 和 hass_token 设置");
+    }
+}
 
 $.done();
 
