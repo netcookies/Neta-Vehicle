@@ -21,23 +21,29 @@ if (tokenVal && tokenVal !== oldTokenVal) {
     $.info(tokenName, "Token 写入成功", `新 Token: ${tokenVal}`);
 
     if (hass_url && hass_token) {
-        $.debug(`开始构造http请求!`);
+        $.debug(`开始构造 http 请求!`);
         let option = {
             url: hass_url,
             headers: {
                 "Authorization": `Bearer ${hass_token}`,
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ token: tokenVal });
-        }
-        
-        // 发送 API 请求
-        $.http.post(option).then(response => {
-            $.debug(`Home Assistant 响应头: ${JSON.stringify(response.headers)}`);
-            $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
-        }).catch(error => {
-            $.error(`API 请求失败: ${error}`);
-            $.msg("NetaVehicle 更新失败", "❌ API 请求错误", error);
+            body: JSON.stringify({ token: tokenVal }) // 请求体需要是 JSON 格式化的字符串
+        };
+
+        // 使用 $.post 发送 API 请求
+        $.post(option, (error, response, data) => {
+            if (error) {
+                $.error(`API 请求失败: ${error}`);
+                $.msg("NetaVehicle 更新失败", "❌ API 请求错误", error);
+            } else if (response && response.statusCode === 200) {
+                $.debug(`Home Assistant 响应头: ${JSON.stringify(response.headers)}`);
+                $.msg("NetaVehicle 更新成功", "✅ Token 已更新", `新 Token: ${tokenVal}`);
+            } else {
+                let statusCode = response ? response.statusCode : "未知";
+                $.error(`API 请求失败: 状态码 ${statusCode}`);
+                $.msg("NetaVehicle 更新失败", "❌ API 请求错误", `状态码: ${statusCode}`);
+            }
         });
     } else {
         $.msg("NetaVehicle 更新失败", "❌ Home Assistant 配置缺失", "请检查 hass_url 和 hass_token 设置");
